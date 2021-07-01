@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Nueva Categoria - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Nueva Categoría</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active"><a href="{{ path('app_home') }}">Inicio/</a><a
+                    href="{{ path('categorias_index') }}">Categorías/</a>Nueva</li>
+    </ol>
+
+    <div class="col-md-5">
+    {{ include('front/categorias/_form.html.twig') }}
+
+
+</div>
+</div>
+{% endblock %}

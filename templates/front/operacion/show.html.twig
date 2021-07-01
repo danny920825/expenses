@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<title>Operacion</title>
+
+{% block body %}
+    <h1>Operacion</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ operacion.id }}</td>
+            </tr>
+            <tr>
+                <th>Tipo</th>
+                <td>{{ operacion.tipo }}</td>
+            </tr>
+            <tr>
+                <th>Cantidad</th>
+                <td>{{ operacion.cantidad }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ operacion.descripcion }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('operacion_index') }}">back to list</a>
+
+    <a href="{{ path('operacion_edit', {'id': operacion.id}) }}">edit</a>
+
+    {{ include('operacion/_delete_form.html.twig') }}
+{% endblock %}

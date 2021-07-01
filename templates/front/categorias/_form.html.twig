@@ -1,0 +1,11 @@
+
+    {{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.nombre )}} <span class="requerido"></span>
+        {{ form_widget(form.nombre,{'attr': {'class': 'form-control', 'required': 'yes', 'autofocus':'yes'}}) }}
+    </div>
+    <div class="form-group">
+        <button class="btn btn-outline-primary"><i class="fa fa-check"></i> {{ button_label|default('Agregar') }}</button>
+    </div>
+    {{ form_end(form) }}
+    <a class="btn btn-outline-primary" href="{{ path('categorias_index') }}"><i class="fas fa-arrow-circle-left"></i> Regresar</a>

@@ -1,0 +1,324 @@
+{% extends ('layouts/base.html.twig') %}
+
+{% block content %}
+    {% set ingresos,gastos = 0, 0 %}
+    {% for op in operaciones %}
+        {% if op.tipo is same as "Gasto" %}
+            {% set gastos = gastos + op.cantidad %}
+        {% endif %}
+        {% if op.tipo is same as "Ingreso" %}
+            {% set ingresos = ingresos + op.cantidad %}
+        {% endif %}
+    {% endfor %}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Ingresos Totales: {{ ingresos }}</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Gastos Totales: {{ gastos }}</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Ingresos del Mes</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">Gastos del Mes</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+       <div class="col-md-12 col-xl-12 col-sm-3">
+           <table id="operaciones" class="table table-hover">
+               <thead>
+               <tr>
+                   <th>No.</th>
+                   <th>Tipo</th>
+                   <th>Cantidad</th>
+                   <th>Moneda</th>
+                   <th>Descripcion</th>
+                   <th>Fecha</th>
+                   <th>Acciones</th>
+               </tr>
+               </thead>
+               <tbody>
+               {% set i = 0 %}
+               {% for operacion in operaciones %}
+                   {% set i = i+1 %}
+                   <tr>
+                       <td>{{ i }}</td>
+                       <td>{{ operacion.tipo }}</td>
+                       <td>{{ operacion.cantidad }}</td>
+                       <td>{{ operacion.moneda }}</td>
+                       <td>{{ operacion.descripcion }}</td>
+                       <td>{{ operacion.fecha|date("d/m/Y")  }}</td>
+                       <td>
+                           <a href="{{ path('operacion_edit', {'id': operacion.id}) }}">
+                               <input type="hidden" name="_method" value="POST" />
+                               <i class="fas fa-edit"></i>
+                           </a>
+
+                           <a href="{{ path('operacion_delete', {'id': operacion.id}) }}">
+                               <i class="fas fa-trash"></i>
+                           </a>
+                       </td>
+                   </tr>
+               {% else %}
+                   <tr>
+                       <td colspan="5">No se encontraron Operaciones</td>
+                   </tr>
+               {% endfor %}
+               </tbody>
+           </table>
+       </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Gastos del Mes
+                </div>
+                <div class="card-body">
+                    <canvas id="bar-chart-gastos" width="100%" height="40">
+
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Ingresos del Mes
+                </div>
+                <div class="card-body"><canvas id="bar-chart-ingresos" width="100%" height="40"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Gastos del Mes
+                </div>
+                <div class="card-body">
+                    <canvas id="line-chart-gastos" width="800" height="450">
+
+                    </canvas>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Ingresos del Mes
+                </div>
+                <div class="card-body">
+                    <canvas id="line-chart-ingresos" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+{{ parent() }}
+
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#operaciones").DataTable();
+        })
+    </script>
+
+    {% set datasetg = [] %}
+    {% set dataseti = [] %}
+    {% set suma = 0 %}
+    {% set values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'] %}
+    {% for cat in categorias %}
+        {% for op in operaciones %}
+            {% if op.tipo == "Gasto" %}
+                {% if cat.nombre is same as op.categoria.nombre %}
+                    {% set suma = suma + op.cantidad %}
+                    {{ suma + op.cantidad }}
+                {% endif %}
+            {% endif %}
+            {% set datasetg =  datasetg|merge({(cat.nombre|trim): suma } ) %}
+        {% endfor %}
+        {% set suma = 0 %}
+    {% endfor %}
+
+    {% for cat in categorias %}
+        {% for op in operaciones %}
+            {% if op.tipo == "Ingreso" %}
+                {% if cat.nombre is same as op.categoria.nombre %}
+                    {% set suma = suma + op.cantidad %}
+                    {{ suma + op.cantidad }}
+                {% endif %}
+            {% endif %}
+            {% set dataseti =  dataseti|merge({(cat.nombre|trim): suma } ) %}
+        {% endfor %}
+        {% set suma = 0 %}
+    {% endfor %}
+    <script>
+        // Bar chart Gastos
+        new Chart(document.getElementById("bar-chart-gastos"), {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for cat,cant in datasetg %}
+                    "{{ cat }}",
+                    {% endfor %}
+                ],
+                datasets: [
+                    {
+                        label: "Gastos e Ingresos del Mes",
+                        backgroundColor: [
+
+                            {% for organization in datasetg %}
+                            "{{'#' ~ random(values)~ random(values)~ random(values)~ random(values)~ random(values)~ random(values)  }}",
+                            {% endfor %}
+
+                        ],
+                        data: [
+                            {% for cat,cant in datasetg %}
+                            {{ cant|trim }},
+                            {% endfor %}
+                        ]
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Gastos del Mes'
+                }
+            }
+        });
+
+        // Bar chart Gastos
+        new Chart(document.getElementById("bar-chart-ingresos"), {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for cat,cant in dataseti %}
+                    "{{ cat }}",
+                    {% endfor %}
+                ],
+                datasets: [
+                    {
+                        label: "",
+                        backgroundColor: [
+
+                            {% for organization in dataseti %}
+                            "{{'#' ~ random(values)~ random(values)~ random(values)~ random(values)~ random(values)~ random(values)  }}",
+                            {% endfor %}
+
+                        ],
+                        data: [
+                            {% for cat,cant in dataseti %}
+                            {{ cant|trim }},
+                            {% endfor %}
+                        ]
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Ingresos del Mes'
+                }
+            }
+        });
+
+
+
+        //Graficos de Linea
+        new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for cat,cant in dataseti %}
+                    "{{ cat }}",
+                    {% endfor %}
+                ],
+                datasets: [{
+                    data: [86,114,106,106,107,111,133,221,783,2478],
+                    label: "Africa",
+                    borderColor: "#3e95cd",
+                    fill: false
+                }, {
+                    data: [282,350,411,502,635,809,947,1402,3700,5267],
+                    label: "Asia",
+                    borderColor: "#8e5ea2",
+                    fill: false
+                }, {
+                    data: [168,170,178,190,203,276,408,547,675,734],
+                    label: "Europe",
+                    borderColor: "#3cba9f",
+                    fill: false
+                }, {
+                    data: [40,20,10,16,24,38,74,167,508,784],
+                    label: "Latin America",
+                    borderColor: "#e8c3b9",
+                    fill: false
+                }, {
+                    data: [6,3,2,2,7,26,82,172,312,433],
+                    label: "North America",
+                    borderColor: "#c45850",
+                    fill: false
+                }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Gastos del Mes (CUP)'
+                }
+            }
+        });
+
+
+    </script>
+{% endblock %}

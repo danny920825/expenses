@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Operaciones index{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Operaciones</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active"><a href="{{ path('app_home') }}">Inicio/</a>Operaciones</li>
+    </ol>
+
+
+    <table id="operaciones" class="table table-hover table-responsive-md">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Moneda</th>
+                <th>Descripcion</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set i = 0 %}
+        {% for operacion in operacions %}
+            {% set i = i+1 %}
+            <tr>
+                <td>{{ i }}</td>
+                <td>{{ operacion.tipo }}</td>
+                <td>{{ operacion.cantidad }}</td>
+                <td>{{ operacion.moneda }}</td>
+                <td>{{ operacion.descripcion }}</td>
+                <td>{{ operacion.fecha|date("d/m/Y")  }}</td>
+                <td>
+                    <a href="{{ path('operacion_edit', {'id': operacion.id}) }}">
+                        <input type="hidden" name="_method" value="POST" />
+                        <i class="fas fa-edit"></i>
+                    </a>
+
+                    <a href="{{ path('operacion_delete', {'id': operacion.id}) }}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No se encontraron Operaciones</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+    <a class="btn btn-outline-primary" href="{{ path('operacion_new') }}"><i class="fa fa-plus-circle"></i> Agregar</a>
+</div>
+{% endblock %}
+
+{% block js %}
+
+    {{ parent() }}
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#operaciones").DataTable();
+        })
+    </script>
+
+
+{% endblock %}

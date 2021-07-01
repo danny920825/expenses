@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+        <title>{% block title %}My Expenses{% endblock %}</title>
+
+    {{ include('layouts/head.html.twig') }}
+    <body class="sb-nav-fixed">
+{{ include ('layouts/navbar.html.twig') }}
+        <div id="layoutSidenav">
+           {{ include ('layouts/sidebar.html.twig') }}
+            <div id="layoutSidenav_content">
+                <main>
+
+                    {% block content %}
+
+                    {% endblock %}
+
+
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; My Expenses 2021</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        {% block js %}
+            {{ include('layouts/js.html.twig') }}
+        {% endblock %}
+    </body>
+</html>

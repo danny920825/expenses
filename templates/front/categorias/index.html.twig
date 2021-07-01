@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Categorias index{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Categorías</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active"><a href="{{ path('app_home') }}">Inicio/</a>Categorías</li>
+    </ol>
+
+    <table class="table table-hover table-responsive-md">
+        <thead>
+            <tr>
+                <th>Numero</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set i = 0 %}
+        {% for categoria in categorias %}
+            {% set i=i+1 %}
+            <tr>
+                <td>{{ i }}</td>
+                <td>{{ categoria.nombre }}</td>
+                <td>
+
+                    <a href="{{ path('categorias_edit', {'id': categoria.id}) }}">
+                        <input type="hidden" name="_method" value="POST" />
+                        <i class="fas fa-edit"></i>
+                    </a>
+
+                    <a href="{{ path('categorias_delete', {'id': categoria.id}) }}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+
+
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No se encontraron categorías</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-primary" href="{{ path('categorias_new') }}"><i class="fa fa-plus-circle"></i> Agregar</a>
+</div>
+    {% endblock %}

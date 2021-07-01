@@ -1,0 +1,32 @@
+
+{{ form_start(form) }}
+<div class="form-group">
+    {{ form_label(form.tipo )}} <span class="requerido"></span>
+    {{ form_widget(form.tipo,{'attr': {'class': 'form-control', 'required': 'yes', 'autofocus':'yes'}}) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.cantidad )}} <span class="requerido"></span>
+    {{ form_widget(form.cantidad,{'attr': {'class': 'form-control', 'required': 'yes' }}) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.moneda )}} <span class="requerido"></span>
+    {{ form_widget(form.moneda,{'attr': {'class': 'form-control', 'required': 'yes' }}) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.descripcion )}} <span class="requerido"></span>
+    {{ form_widget(form.descripcion,{'attr': {'class': 'form-control', 'required': 'yes' }}) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.fecha )}} <span class="requerido"></span>
+    {{ form_widget(form.fecha,{'attr': {'class': 'form-control js-datepicker', 'required': 'yes' }}) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.categoria )}} <span class="requerido"></span>
+    {{ form_widget(form.categoria,{'attr': {'class': 'form-control', 'required': 'yes' }}) }}
+</div>
+<div class="form-group">
+    <button class="btn btn-outline-primary"><i class="fa fa-check"></i> {{ button_label|default('Agregar') }}</button>
+</div>
+{{ form_end(form) }}
+<a class="btn btn-outline-primary" href="{{ path('operacion_index') }}"><i class="fas fa-arrow-circle-left"></i> Regresar</a>
+
